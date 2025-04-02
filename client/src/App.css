@@ -1,0 +1,9 @@
+.navbar-brand a{
+    color:inherit;
+    font-weight: bold;
+    text-decoration:none;
+}
+
+.card{
+    max-width:50rem;
+}

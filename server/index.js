@@ -1,0 +1,164 @@
+const cors=require('cors')
+const express=require('express');
+const mongoose=require('mongoose')
+const User = require('./models/User.js')
+const bcrypt = require('bcryptjs')
+const jwt=require('jsonwebtoken')
+const cookieParser = require('cookie-parser');
+const Blog = require('./models/Blog.js')
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+const fetch = require('node-fetch');  // Import node-fetch
+
+const secret= 'r298rh29rh2973hr982'
+const salt = bcrypt.genSaltSync(10);
+mongoose.connect('mongodb+srv://suraj:j9dr8ecLqwgW5epK@selab.n0utwej.mongodb.net/?retryWrites=true&w=majority')
+
+const app=express();
+app.get('/',(req,res)=>{
+    res.send('hello')
+})
+app.use(cookieParser());
+
+app.use(cors({
+    credentials:true,
+    origin:'http://localhost:3000'
+}));
+
+app.use(express.json())
+
+app.post('/register',async (req,res)=>{
+    const{userName,password} = req.body;
+
+    try{
+        const newUser= await User.create({username:userName,password:bcrypt.hashSync(password,salt)});
+        res.status(200).json('success')
+
+    }
+    catch(error){
+        res.status(400).json(error)
+    }
+})
+
+app.post('/login',async(req,res)=>{
+    const {userName,password} = req.body;
+    var userDoc=await User.findOne({username:userName});
+    var passOk=true;
+    if(!userDoc){
+        res.status(400).json('User not found')
+        passOk=false;
+    }
+    if(passOk) passOk=bcrypt.compareSync(password, userDoc.password);
+    if(passOk){
+        //login user
+         jwt.sign({userName,id:userDoc._id},secret,{},(error,token)=>{
+            if(error){
+                throw error;
+            }
+            res.cookie('token',token).json({
+                id:userDoc._id,
+                userName,
+            })
+         })
+    }
+    else if(userDoc){
+        res.status(400).json('wrong credentials')
+    }
+
+})
+
+app.post('/create',async (req,res)=>{
+    const {title,summary,description,imageUrl,userName} = req.body
+    try{
+        const blogDoc= await Blog.create({
+            title:title,
+            summary:summary,
+            description:description,
+            imageUrl:imageUrl,
+            author:userName,
+        })
+        res.status(200).json("successfully created new blog")
+    }
+    catch(error){
+        res.status(400).json("error creating blog")
+    }
+
+    
+})
+
+app.get('/blog',async (req,res)=>{
+    const blogs= await Blog.find().sort({createdAt:-1}).limit(20)
+    res.json(blogs)
+})
+
+app.get('/profile',(req,res)=>{
+    console.log(req.cookies);
+    const {token} = req.cookies;
+    jwt.verify(token,secret,{},(error,info)=>{
+        if(error) throw error;
+        res.json(info);
+    })
+})
+
+app.post('/logout',(req,res)=>{
+    res.cookie('token','').json('ok')
+})
+
+app.get('/post/:id',async (req,res)=>{
+    const id=req.params.id;
+    const blogInfo = await Blog.findById(id);
+    res.json(blogInfo);
+})
+
+app.get('/delete/:id',async(req,res)=>{
+    const id=req.params.id;
+    try{
+        await Blog.findByIdAndDelete(id);
+        res.status(200).json("ok")
+    }
+    catch(error){
+        res.status(400).json("error deleting")
+    }
+    
+})
+app.post('/edit/:id',async(req,res)=>{
+    const id=req.params.id;
+    const {imageUrl,title,description,summary} = req.body
+    try{
+        const response= await  Blog.findByIdAndUpdate(
+            id,
+            {
+            imageUrl:imageUrl,
+
+            
+            description:description,
+            title:title,
+            summary:summary
+        })
+        res.status(200).json("ok")
+    }
+    catch(error){
+        console.log(error);
+        res.status(400).json("error")
+    }
+
+
+
+})
+app.post('/generate-content',async(req,res)=>{
+    try{
+        const {description} = req.body;
+        const genAI = new GoogleGenerativeAI("AIzaSyCzagk0OAGEDlvxEGZNtyl5eK_aEoKvd9A");
+        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+        const prompt = "Enhance the given sentence without changing original meaning or context in a paragraph without mentioning its enhanced.Jump straight to the point.Correct any grammatical errors if any.This is part of a blog.Align the content with keywords in bold and give keywords href links which move to google with words when clicked." + description;
+        console.log(prompt)
+        const result = await model.generateContent(prompt);
+        //console.log(result.response.text());
+        res.json(result.response.text());
+    }
+    catch(error){
+        console.log(error);
+        res.status(400).json("error")
+    }
+})
+app.listen(process.env.PORT || 5000);
