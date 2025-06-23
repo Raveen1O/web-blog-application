@@ -7,7 +7,7 @@ const BlogList = () => {
   const [rendered,setRendered] = useState(false);
   const {userInfo,loggedIn,appliedChanges,setLoggedIn,setAppliedChanges,deleted,setDeleted} = useContext(UserContext) 
   useEffect(()=>{
-    fetch('http://localhost:5000/blog'
+    fetch('https://ai-blog-app-fsqg.onrender.com/blog'
     ).then(response=>{
       response.json().then(posts=>{
         setBlogs(posts)
