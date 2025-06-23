@@ -14,7 +14,7 @@ const CreatePost = () => {
   const [redirect,setRedirect] = useState(false)
   async function handleSubmit(event){
     event.preventDefault()
-    const response= await fetch('http://localhost:5000/create',{
+    const response= await fetch('https://ai-blog-app-fsqg.onrender.com/create',{
         method:'POST',
         credentials:'include',
         body:JSON.stringify({title,summary,description,imageUrl,userName}),
@@ -27,7 +27,7 @@ const CreatePost = () => {
   }
   async function handleContent(event) {
     event.preventDefault()
-    const response= await fetch('http://localhost:5000/generate-content',{
+    const response= await fetch('https://ai-blog-app-fsqg.onrender.com/generate-content',{
       method:'POST',
       credentials:'include',
       body:JSON.stringify({description}),
