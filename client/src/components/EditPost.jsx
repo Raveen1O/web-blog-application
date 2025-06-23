@@ -16,7 +16,7 @@ const EditPost = () => {
   const [redirect,setRedirect] = useState(false)
 
   useEffect(()=>{
-    fetch(`http://localhost:5000/post/${id}`,{
+    fetch(`https://ai-blog-app-fsqg.onrender.com/post/${id}`,{
         credentials:'include',
     }).then(response=>{
         response.json().then(postInfo=>{
@@ -30,7 +30,7 @@ const EditPost = () => {
   },[])
   async function handleSubmit(event){
     event.preventDefault();
-  fetch(`http://localhost:5000/edit/${id}`, {  // Use correct URL here
+  fetch(`https://ai-blog-app-fsqg.onrender.com/edit/${id}`, {  // Use correct URL here
     method: 'POST',  // You might want to change this to 'PUT' or 'PATCH' if you're updating an existing post
     body: JSON.stringify({ title, author, description, imageUrl, summary }),
     credentials: 'include',
@@ -50,7 +50,7 @@ const EditPost = () => {
 }
 async function handleContent(event) {
   event.preventDefault()
-  const response= await fetch('http://localhost:5000/generate-content',{
+  const response= await fetch('https://ai-blog-app-fsqg.onrender.com/generate-content',{
     method:'POST',
     credentials:'include',
     body:JSON.stringify({description}),
