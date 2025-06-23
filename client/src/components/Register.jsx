@@ -8,7 +8,7 @@ const Register = () => {
   async function handleSubmit(event)  {
     event.preventDefault();
     const response=await fetch(
-      'http://localhost:5000/register',{
+      'https://ai-blog-app-fsqg.onrender.com/register',{
         method: 'POST',
         body: JSON.stringify({userName,password}),
         headers: {'Content-Type': 'application/json'},
