@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 const BlogPreview = ({title,summary,description,imageUrl,createdAt,author,_id}) => {
   const {userInfo,setDeleted,deleted} = useContext(UserContext);
   async function handleDelete(){
-    await fetch(`http://localhost:5000/delete/${_id}
+    await fetch(`https://ai-blog-app-fsqg.onrender.com/delete/${_id}
 `);
     setDeleted(true);
   }
