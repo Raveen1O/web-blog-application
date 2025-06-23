@@ -7,7 +7,7 @@ import {UserContext} from './UserContext.jsx';
 const Header = () => {
   const {setUserInfo,userInfo} = useContext(UserContext)
   useEffect(()=>{
-    fetch('http://localhost:5000/profile',{
+    fetch('https://ai-blog-app-fsqg.onrender.com/profile',{
       method:'GET',
       credentials:'include',
       headers: {'Content-Type': 'application/json'},
@@ -23,7 +23,7 @@ const Header = () => {
   function logout(event){
     console.log('hi')
     event.preventDefault();
-    fetch('http://localhost:5000/logout',{
+    fetch('https://ai-blog-app-fsqg.onrender.com/logout',{
       credentials:'include',
       method:'POST',
     })
