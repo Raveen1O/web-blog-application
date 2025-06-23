@@ -13,7 +13,7 @@ const BlogPage = () => {
     const [postInfo,setPostInfo] = useState(null)
     const {userInfo} = useContext(UserContext) 
     useEffect(()=>{
-        fetch(`http://localhost:5000/post/${id}`).then((response)=>{
+        fetch(`https://ai-blog-app-fsqg.onrender.com/post/${id}`).then((response)=>{
             response.json().then((postInfo)=>{
                 setPostInfo(postInfo);
             })
