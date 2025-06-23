@@ -150,7 +150,7 @@ app.post('/generate-content',async(req,res)=>{
         const genAI = new GoogleGenerativeAI("AIzaSyCzagk0OAGEDlvxEGZNtyl5eK_aEoKvd9A");
         const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-        const prompt = "Enhance the given sentence without changing original meaning or context in a paragraph without mentioning its enhanced.Jump straight to the point.Correct any grammatical errors if any.This is part of a blog.Align the content with keywords in bold and give keywords href links which move to google with words when clicked." + description;
+        const prompt = "Enhance the given sentence without changing original meaning or context in a paragraph without mentioning its enhanced.Jump straight to the point.Correct any grammatical errors if any." + description;
         console.log(prompt)
         const result = await model.generateContent(prompt);
         //console.log(result.response.text());
