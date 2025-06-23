@@ -21,7 +21,7 @@ app.use(cookieParser());
 
 app.use(cors({
     credentials:true,
-    origin:'http://localhost:3000'
+    origin:'https://ai-webclient.onrender.com'
 }));
 
 app.use(express.json())
